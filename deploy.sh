@@ -1,7 +1,7 @@
 #!/bin/bash
 
 STACKSETNAME="mystackset"
-ACCOUNTS="${ACCOUNTS}"
+ACCOUNTS="473148384440"
 REGIONS="us-east-2"
   
 aws cloudformation create-stack-set --stack-set-name ${STACKSETNAME} --template-body file://stackset-creation/s3-creation.yaml

@@ -20,6 +20,6 @@ elif [[ $STACKSETSTATUS == "ACTIVE" ]];then
    echo "${OPERATIONACTION} STATUS:${OPERATIONSTATUS}"
  elif [[ $OPERATIONSTATUS != "SUCCEEDED" ]]; then
 	DELETE_STACKINSTANCE_OPERATIONID=$(aws cloudformation delete-stack-instances --stack-set-name ${STACKSETNAME} --accounts ${ACCOUNTS} --regions ${REGIONS} --no-retain-stacks)
-    DELETE_STACKINSTANCE_OPERATIONACTION=$(aws cloudformation describe-stack-set-operation --stack-set-name ${STACKSETNAME} --operation-id 286a0aa7-763a-4af9-a75f-aa28ac1cd6e5 --query StackSetOperation.Action)
+    DELETE_STACKINSTANCE_OPERATIONACTION=$(aws cloudformation describe-stack-set-operation --stack-set-name ${STACKSETNAME} --operation-id ${DELETE_STACKINSTANCE_OPERATIONID} --query StackSetOperation.Action)
   
-	DELETE_STACKINSTANCE_OPERATIONSTATUS=$(aws cloudformation describe-stack-set-operation --stack-set-name ${STACKSETNAME} --operation-id 286a0aa7-763a-4af9-a75f-aa28ac1cd6e5 --query StackSetOperation.Status)
+	DELETE_STACKINSTANCE_OPERATIONSTATUS=$(aws cloudformation describe-stack-set-operation --stack-set-name ${STACKSETNAME} --operation-id ${DELETE_STACKINSTANCE_OPERATIONID} --query StackSetOperation.Status)

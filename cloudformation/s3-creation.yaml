@@ -11,7 +11,7 @@ Parameters:
   S3BucketName:
     Type: String
     Description: The name for the S3 bucket - must be unique across all of AWS (3-63 lowercase letters or numbers)
-    Default: replaceme321
+    Default: replaceme3212
     AllowedPattern: '^[a-z0-9]{3,63}$'
     ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
 Resources:

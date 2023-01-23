@@ -1,6 +1,6 @@
 #!/bin/bash
-         execution-role-name="AWSCloudFormationStackSetExecutionRole"
-         administration-role-arn="arn:aws:iam::473148384440:role/AWSCloudFormationStackSetAdministrationRole"
+         execution_role_name="AWSCloudFormationStackSetExecutionRole"
+         administration_role_arn="arn:aws:iam::473148384440:role/AWSCloudFormationStackSetAdministrationRole"
         if [ $# -ne 9 ]; then
             echo "Enter stack set name, stack set parameters file name, stack set template file name to create, set changeset value (true or false),enter region name and profile. "
             exit 0
@@ -34,7 +34,7 @@
         if [[ -z "$STACKSETEXISTS" ]] && [[ $CHANGESET_MODE == "create&execute-stackset" ]];
         then
         echo "Create Stack-set"
-        aws cloudformation create-stack-set --stack-set-name ${STACK_SET_NAME} --template-body file://cloudformation/${STACK_SET_TEMPLATE_NAME} --parameters ParameterKey=S3BucketName,ParameterValue=${S3BUCKET} --execution-role-name ${execution-role-name} --administration-role-arn ${administration-role-arn} --region $REGION --profile $PROFILE
+        aws cloudformation create-stack-set --stack-set-name ${STACK_SET_NAME} --template-body file://cloudformation/${STACK_SET_TEMPLATE_NAME} --parameters ParameterKey=S3BucketName,ParameterValue=${S3BUCKET} --execution-role-name ${execution_role_name} --administration-role-arn ${administration_role_arn} --region $REGION --profile $PROFILE
         STACKSETSTATUS=$(aws cloudformation describe-stack-set --stack-set-name ${STACK_SET_NAME} --query StackSet.Status --region $REGION --profile $PROFILE --output text)
         echo "StackSet Creation status: $STACKSETSTATUS"
         #if stackset name exists in the above list
@@ -88,19 +88,9 @@
          if [[ "$CHANGESET_MODE" == "delete-stackset" ]];
          then
          echo "Delete the StackSet"
-         DELETE_STACKSET_OPERATIONID=$(aws cloudformation delete-stack-set --stack-set-name ${STACK_SET_NAME} --query OperationId --region $REGION --profile $PROFILE)
-         echo "Deleting the StackSet OperationID:$DELETE_STACKSET_OPERATIONID"
-         DELETE_STACKSET_OPERATIONACTION=$(aws cloudformation describe-stack-set-operation --stack-set-name ${STACK_SET_NAME} --operation-id ${DELETE_STACKSET_OPERATIONID} --query StackSetOperation.Action --region $REGION --profile $PROFILE --output text)
-         DELETE_STACKSET_OPERATIONSTATUS=$(aws cloudformation describe-stack-set-operation --stack-set-name ${STACK_SET_NAME} --operation-id ${DELETE_STACKSET_OPERATIONID} --query StackSetOperation.Status --region $REGION --profile $PROFILE --output text)
-                while [[ "$DELETE_STACKSET_OPERATIONSTATUS" == "RUNNING" ]]
-                do
-        sleep 10
-                  DELETE_STACKSET_OPERATIONSTATUS=$(aws cloudformation describe-stack-set-operation --stack-set-name ${STACK_SET_NAME} --operation-id ${DELETE_STACKSET_OPERATIONID} --query StackSetOperation.Status --region $REGION --profile $PROFILE --output text)
-                  echo "Stack-Instance $DELETE_STACKSET_OPERATIONACTION status: $DELETE_STACKSET_OPERATIONSTATUS"
-
-          done
-                echo "STATUS ACTION $DELETE_STACKSET_OPERATIONACTION STATUS:$DELETE_STACKSET_OPERATIONSTATUS"
-                aws cloudformation list-stack-sets --status ACTIVE --query Summaries[*].StackSetName --region $REGION --profile $PROFILE
+         aws cloudformation delete-stack-set --stack-set-name ${STACK_SET_NAME} --region $REGION --profile $PROFILE
+	 DELETE_STACKSET_STATUS=$(aws cloudformation describe-stack-set --stack-set-name  ${STACK_SET_NAME} --region ${REGION} --profile $PROFILE --query StackSet.Status --output text)
+	 echo "StackSet Status:$DELETE_STACKSET_STATUS"
          fi
 
 
@@ -125,7 +115,7 @@
         if [[ "$CHANGESET_MODE" == "update-stackset" ]];
         then
         echo "Update the stackset"
-        UPDATE_STACKSET_OPERATIONID=$(aws cloudformation update-stack-set --stack-set-name ${STACK_SET_NAME} --template-body file://cloudformation/${STACK_SET_TEMPLATE_NAME} --tags Key=StackSetName,Value=${STACK_SET_NAME} --parameters ParameterKey=S3BucketName,ParameterValue=${S3BUCKET} --execution-role-name ${execution-role-name} --administration-role-arn ${administration-role-arn} --query OperationId --region $REGION --profile $PROFILE)
+        UPDATE_STACKSET_OPERATIONID=$(aws cloudformation update-stack-set --stack-set-name ${STACK_SET_NAME} --template-body file://cloudformation/${STACK_SET_TEMPLATE_NAME} --tags Key=StackSetName,Value=${STACK_SET_NAME} --parameters ParameterKey=S3BucketName,ParameterValue=${S3BUCKET} --execution-role-name ${execution_role_name} --administration-role-arn ${administration_role_arn} --query OperationId --region $REGION --profile $PROFILE)
         echo "Updating the StackSet OperationID:$UPDATE_STACKSET_OPERATIONID"
         UPDATE_STACKSET_OPERATIONACTION=$(aws cloudformation describe-stack-set-operation --stack-set-name ${STACK_SET_NAME} --operation-id ${UPDATE_STACKSET_OPERATIONID} --query StackSetOperation.Action --region $REGION --profile $PROFILE --output text)
         UPDATE_STACKSET_OPERATIONSTATUS=$(aws cloudformation describe-stack-set-operation --stack-set-name ${STACK_SET_NAME} --operation-id ${UPDATE_STACKSET_OPERATIONID} --query StackSetOperation.Status --region $REGION --profile $PROFILE --output text)

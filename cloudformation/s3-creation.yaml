@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  AWS CloudFormation Sample Template to create s3 bucket
+
+########################################################################
+
+Parameters:
+  #General:
+
+  # S3 Bucket
+  S3BucketName:
+    Type: String
+    Description: The name for the S3 bucket - must be unique across all of AWS (3-63 lowercase letters or numbers)
+    Default: replaceme321
+    AllowedPattern: '^[a-z0-9]{3,63}$'
+    ConstraintDescription: 3-63 characters; must contain only lowercase letters or numbers
+Resources:
+
+  ###########
+  # Student added resources
+  ###########
+
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join
+        - '-'
+        - - !Ref S3BucketName
+          - !Ref 'AWS::Region'
+
+Outputs:
+
+  SimpleS3Bucket:
+    Value: !Ref MyS3Bucket
+
+########################################################################
+# Metadata is used to group and order how the CloudFormation parameters are
+# displayed when you deploy the template using the AWS Console
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      -
+        Label:
+          default: "S3 bucket"
+        Parameters:
+          - S3BucketName

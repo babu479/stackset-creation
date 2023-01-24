@@ -1,0 +1,35 @@
+[$class: 'ChoiceParameter',
+            choiceType: 'PT_SINGLE_SELECT',
+            description: 'Select the DomainName from the Dropdown List',
+            filterLength: 1,
+            filterable: false,
+            name: 'historylist',
+            script: [
+                $class: 'GroovyScript',
+                fallbackScript: [
+                    classpath: [],
+                    sandbox: false,
+                    script:
+                        'return[\'Could not get history\']'
+                ],
+                script: [
+                    classpath: [],
+                    sandbox: false,
+                    script:
+                        '''
+						def command = "/u01/Scripts/PipelineScripts/list_history.sh"
+						def proc = command.execute()
+						proc.waitFor()
+						def output = proc.in.text
+						def exitcode= proc.exitValue()
+						def error = proc.err.text
+						if (error) {
+							println "Std Err: ${error}"
+							println "Process exit code: ${exitcode}"
+							return exitcode
+						}
+						return output.tokenize()
+						'''
+                ]
+            ]
+        ],		
